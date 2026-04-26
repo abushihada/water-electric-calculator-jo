@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم الشاملة لفواتير 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f1f5f9;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+            border-radius: 1.5rem;
+        }
+
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active-water {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+            font-weight: 700;
+            border-radius: 0.75rem;
+        }
+
+        .tab-btn.active-electricity {
+            background-color: #fbbf24 !important;
+            color: #1e293b !important;
+            font-weight: 700;
+            border-radius: 0.75rem;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .info-table th,
+        .info-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: right;
+        }
+
+        .info-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .info-table td {
+            color: #334155;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Floating Alert */
+        .smart-alert {
+            border-right: 4px solid #ef4444;
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800 antialiased min-h-screen py-6 md:py-10">
+
+    <div class="text-center mb-8 fade-in">
+        <h1 class="text-3xl lg:text-4xl font-black text-slate-800 tracking-tight">حاسبة فواتير المياه والكهرباء في
+            الأردن</h1>
+        <p class="text-slate-500 mt-2 font-medium">النسخة المحدثة 2026 - شامل القطاعين المنزلي وغير المنزلي</p>
+    </div>
+
+    <!-- 3 Column Layout (CSS Grid) -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 max-w-[1400px] mx-auto px-4 w-full items-start">
+
+        <!-- Column 1 (Right): Water Table -->
+        <div id="waterSidebar"
+            class="glass-card p-6 fade-in order-2 xl:order-1 hidden xl:block overflow-y-auto max-h-[70vh]"
+            style="animation-delay: 0.2s;">
+            <h2 class="text-xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+                <span>💧</span>تعرفة المياه الرسمية
+            </h2>
+
+            <h3 class="font-bold text-slate-600 mb-2 mt-4 text-sm" id="section-dom">القطاع المنزلي</h3>
+            <div data-category-table="dom" class="border rounded-xl overflow-hidden mb-6 transition duration-500">
+                <table class="w-full info-table">
+                    <thead>
+                        <tr>
+                            <th>الشريحة</th>
+                            <th>تكلفتها (د.أ)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>أول 6 م³ (مقطوعة)</td>
+                            <td>2.730</td>
+                        </tr>
+                        <tr>
+                            <td>7 إلى 12 م³</td>
+                            <td>0.750 / م³</td>
+                        </tr>
+                        <tr>
+                            <td>13 إلى 18 م³</td>
+                            <td>1.300 / م³</td>
+                        </tr>
+                        <tr>
+                            <td>19 إلى 24 م³</td>
+                            <td>1.800 / م³</td>
+                        </tr>
+                        <tr>
+                            <td>25 إلى 30 م³</td>
+                            <td>2.250 / م³</td>
+                        </tr>
+                        <tr>
+                            <td>31 إلى 42 م³</td>
+                            <td>2.750 / م³</td>
+                        </tr>
+                        <tr>
+                            <td>تجاوز 42 م³</td>
+                            <td>3.400 / م³</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="text-xs text-slate-400">تدفع رسوم ثابتة 1.408 د.أ إذا تجاوز الاستهلاك
+                                6 م³.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="font-bold text-slate-600 mb-2 text-sm" id="section-nondom">القطاع غير المنزلي (التعرفة المختلطة)
+            </h3>
+            <div data-category-table="non_dom" class="border rounded-xl overflow-hidden mb-2 transition duration-500">
+                <table class="w-full info-table">
+                    <thead>
+                        <tr>
+                            <th>الشريحة</th>
+                            <th>التكلفة (مياه+صرف)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>من 0 إلى 2 م³</td>
+                            <td>3.110 د.أ / م³</td>
+                        </tr>
+                        <tr>
+                            <td>تجاوز 2 م³</td>
+                            <td>2.380 د.أ / م³</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="text-xs text-slate-400">تضاف رسوم ثابتة 1.408 د.أ في حال وجود
+                                استهلاك.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Column 2 (Center): Calculator -->
+        <div
+            class="order-1 xl:order-2 w-full max-w-xl mx-auto shadow-xl rounded-2xl bg-white border border-slate-100 pb-2">
+
+            <!-- Navigation Tabs -->
+            <div class="p-4 border-b border-slate-100 bg-slate-50 rounded-t-2xl">
+                <div
+                    class="flex space-x-2 space-x-reverse text-lg font-medium text-slate-400 bg-slate-200/50 p-1 rounded-2xl">
+                    <button id="btnWater" class="tab-btn w-1/2 py-3 text-center active-water"
+                        onclick="switchTab('water')">
+                        قطاع المياه
+                    </button>
+                    <button id="btnElec" class="tab-btn w-1/2 py-3 text-center" onclick="switchTab('electricity')">
+                        قطاع الكهرباء
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <!-- Water Calculator Section -->
+                <div id="waterSection" class="fade-in">
+
+                    <label class="block text-slate-700 font-bold mb-2 text-lg">نوع الاشتراك (المياه):</label>
+                    <select id="waterCategory"
+                        class="w-full bg-slate-50 border-2 border-slate-200 text-lg p-4 rounded-xl focus:outline-none focus:border-blue-500 transition-colors mb-5">
+                        <option value="dom">منزلي</option>
+                        <option value="non_dom">غير منزلي</option>
+                    </select>
+
+                    <label class="block text-slate-700 font-bold mb-2 text-lg">كمية الاستهلاك الشهري (م³):</label>
+                    <div class="relative mb-6">
+                        <input type="number" id="waterInput" placeholder="أدخل الكمية هنا..."
+                            class="calc-input w-full bg-slate-50 border-2 border-slate-200 text-xl p-4 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+                            step="any">
+                    </div>
+                    <button onclick="calculateWater()"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 rounded-xl shadow border border-blue-600 transition-all active:scale-95">
+                        حساب النتيجة
+                    </button>
+
+                    <!-- Smart Alert (Water) -->
+                    <div id="waterAlert"
+                        class="mt-4 p-4 rounded-lg smart-alert hidden text-sm font-bold flex items-center gap-3">
+                        <span class="text-2xl">⚠️</span>
+                        <span>تنبيه: لقد دخلت في شرائح الاستهلاك المرتفعة للمياه! ننصح بترشيد الاستهلاك لتجنب الفواتير
+                            العالية.</span>
+                    </div>
+
+                    <!-- Results (Water) -->
+                    <div id="waterResult" class="mt-6 hidden space-y-4">
+                        <div class="bg-white border-2 border-blue-100 rounded-xl p-5 shadow-sm text-center">
+                            <p class="text-slate-500 font-bold mb-1 text-sm">قيمة الفاتورة الكلية (قبل الدعم إن وجد)</p>
+                            <p class="text-xl font-black text-slate-700 mb-4" id="waterGross">0.000 د.أ</p>
+
+                            <div
+                                class="flex justify-between items-center bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                                <span class="text-blue-800 font-bold text-lg">صافي الفاتورة المطلوبة:</span>
+                                <span class="text-3xl font-black text-blue-700" id="waterTotal">0.000 د.أ</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3" id="waterSubsidyContainer">
+                                <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-100 text-center">
+                                    <p class="text-emerald-700 text-xs font-bold mb-1">قيمة الدعم الحكومي</p>
+                                    <p class="text-lg font-black text-emerald-600" id="waterSubsidy">0.000 د.أ</p>
+                                </div>
+                                <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-100 text-center">
+                                    <p class="text-emerald-700 text-xs font-bold mb-1">نسبة الدعم</p>
+                                    <p class="text-lg font-black text-emerald-600" id="waterPercentage">0%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="font-bold text-slate-600 mt-2 mb-2 text-sm">تفصيل الفاتورة:</h3>
+                        <div class="border rounded-xl overflow-hidden shadow-sm">
+                            <table class="w-full text-sm text-right info-table bg-white">
+                                <thead>
+                                    <tr>
+                                        <th>الشريحة / الوصف</th>
+                                        <th>الكمية المُطبقة</th>
+                                        <th class="text-left">الكلفة (د.أ)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="waterBreakdownItems"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Electricity Calculator Section -->
+                <div id="electricitySection" class="hidden fade-in">
+                    <label class="block text-slate-700 font-bold mb-2 text-lg">نوع الاشتراك (الكهرباء):</label>
+                    <select id="elecCategory" onchange="toggleEvInputs()"
+                        class="w-full bg-slate-50 border-2 border-slate-200 text-lg p-4 rounded-xl focus:outline-none focus:border-amber-500 transition-colors mb-5">
+                        <option value="dom_supported">منزلي مدعوم</option>
+                        <option value="dom_unsupported">منزلي غير مدعوم</option>
+                        <option value="dom_services">عداد الخدمات المنزلي</option>
+                        <option value="commercial">التجاري / خدمات تجاري</option>
+                        <option value="banks">البنوك</option>
+                        <option value="hospitals">مستشفيات خاصة</option>
+                        <option value="armed_forces">القوات المسلحة الأردنية</option>
+                        <option value="agriculture">قطاع الزراعة (مستوية)</option>
+                        <option value="hotels">الفنادق (مستوية)</option>
+                        <option value="small_industrial">الصناعيون الصغار</option>
+                        <option value="tv_radio">الاذاعة والتلفزيون</option>
+                        <option value="telecom">الاتصالات</option>
+                        <option value="water_pumping">ضخ المياه</option>
+                        <option value="street_lights">إنارة شوارع</option>
+                        <option value="ports">مؤسسة الموانئ</option>
+                        <option value="mixed_comm_agri">مختلطة تجاري/زراعي</option>
+                        <option value="ev_home">شحن المركبات (منزلي - زمني)</option>
+                        <option value="ev_public">شحن المركبات (محطات عامة - زمني)</option>
+                        <option value="med_industrial">الصناعي المتوسط (زمني)</option>
+                    </select>
+
+                    <div id="standardElecInput">
+                        <label class="block text-slate-700 font-bold mb-2 text-lg">كمية الاستهلاك الشهري
+                            (ك.و.س):</label>
+                        <div class="relative mb-6">
+                            <input type="number" id="elecInput" placeholder="أدخل الكمية..."
+                                class="calc-input w-full bg-slate-50 border-2 border-slate-200 text-xl p-4 rounded-xl focus:outline-none focus:border-amber-500 transition-colors"
+                                step="any">
+                            <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 font-bold">kWh
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="evElecInputs" class="hidden mb-6 space-y-3">
+                        <div class="relative">
+                            <label id="lblPeak" class="block text-sm font-bold text-slate-600 mb-1">الذروة
+                                (ك.و.س)</label>
+                            <input type="number" id="peakInput" placeholder="أدخل kWh"
+                                class="calc-input w-full bg-slate-50 border border-slate-200 text-lg p-3 rounded-lg focus:outline-none focus:border-amber-500 transition-colors"
+                                step="any">
+                        </div>
+                        <div class="relative">
+                            <label id="lblPartial" class="block text-sm font-bold text-slate-600 mb-1">الجزئي
+                                (ك.و.س)</label>
+                            <input type="number" id="partialInput" placeholder="أدخل kWh"
+                                class="calc-input w-full bg-slate-50 border border-slate-200 text-lg p-3 rounded-lg focus:outline-none focus:border-amber-500 transition-colors"
+                                step="any">
+                        </div>
+                        <div class="relative">
+                            <label id="lblOffPeak" class="block text-sm font-bold text-slate-600 mb-1">خارج الذروة
+                                (ك.و.س)</label>
+                            <input type="number" id="offpeakInput" placeholder="أدخل kWh"
+                                class="calc-input w-full bg-slate-50 border border-slate-200 text-lg p-3 rounded-lg focus:outline-none focus:border-amber-500 transition-colors"
+                                step="any">
+                        </div>
+                    </div>
+
+                    <button onclick="calculateElectricity()"
+                        class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-black text-lg py-4 rounded-xl shadow border border-amber-600 transition-all active:scale-95">
+                        حساب النتيجة
+                    </button>
+
+                    <!-- Smart Alert (Electricity) -->
+                    <div id="elecAlert"
+                        class="mt-4 p-4 rounded-lg smart-alert hidden text-sm font-bold flex items-center gap-3">
+                        <span class="text-2xl">⚠️</span>
+                        <span>تنبيه: استهلاكك طال شريحة الأعلى كلفة للكهرباء (فوق 600 ك.و.س)! يرجى فصل الأجهزة لتقليل
+                            الهدر.</span>
+                    </div>
+
+                    <!-- Results (Electricity) -->
+                    <div id="elecResult" class="mt-6 hidden space-y-4">
+                        <div class="bg-white border-2 border-amber-100 rounded-xl p-5 shadow-sm text-center">
+                            <p class="text-slate-500 font-bold mb-1 text-sm">قيمة الفاتورة الكلية</p>
+                            <p class="text-xl font-black text-slate-700 mb-4" id="elecGross">0.000 د.أ</p>
+
+                            <div
+                                class="flex justify-between items-center bg-amber-50 p-4 rounded-lg border border-amber-200 mb-4">
+                                <span class="text-amber-800 font-bold text-lg">صافي الفاتورة المطلوبة:</span>
+                                <span class="text-3xl font-black text-amber-700" id="elecTotal">0.000 د.أ</span>
+                            </div>
+
+                            <div class="bg-rose-50 rounded-lg p-2 mb-4 text-center border border-rose-100 hidden"
+                                id="elecMinContainer">
+                                <p class="text-rose-700 font-semibold text-sm">تم تطبيق الحد الأدنى للفاتورة (1.75 د.أ)
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3" id="elecDiscountContainer">
+                                <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-100 text-center">
+                                    <p class="text-emerald-700 text-xs font-bold mb-1">قيمة الدعم الحكومي</p>
+                                    <p class="text-lg font-black text-emerald-600" id="elecDiscount">0.000 د.أ</p>
+                                </div>
+                                <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-100 text-center">
+                                    <p class="text-emerald-700 text-xs font-bold mb-1">نسبة الدعم</p>
+                                    <p class="text-lg font-black text-emerald-600" id="elecPercentage">0%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="font-bold text-slate-600 mt-2 mb-2 text-sm">تفصيل الفاتورة:</h3>
+                        <div class="border rounded-xl overflow-hidden shadow-sm">
+                            <table class="w-full text-sm text-right info-table bg-white">
+                                <thead>
+                                    <tr>
+                                        <th>الشريحة / الوصف</th>
+                                        <th>الكمية</th>
+                                        <th class="text-left">الكلفة (د.أ)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="elecBreakdownItems"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 3 (Left): Electricity Table -->
+        <div id="elecSidebar" class="glass-card p-6 fade-in order-3 hidden xl:block overflow-y-auto max-h-[70vh]"
+            style="animation-delay: 0.3s;">
+            <h2 class="text-xl font-bold text-amber-500 mb-4 flex items-center gap-2">
+                <span>⚡</span>تعرفة الكهرباء الرسمية
+            </h2>
+
+            <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-4 shadow-sm">
+                <h3 class="font-bold text-indigo-800 text-sm mb-2 flex items-center gap-2">
+                    <span>⏱️</span> فترات التعرفة المرتبطة بالزمن
+                </h3>
+                <div class="space-y-2 text-xs md:text-sm font-medium">
+                    <div
+                        class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-100 shadow-sm">
+                        <span class="text-rose-600 font-bold">الذروة</span>
+                        <span class="text-slate-600">5:00 م - 11:00 م</span>
+                    </div>
+                    <div
+                        class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-100 shadow-sm">
+                        <span class="text-amber-600 font-bold">الذروة الجزئية</span>
+                        <div class="text-slate-600 text-left leading-relaxed">
+                            2:00 ظ - 5:00 م<br>11:00 م - 5:00 ص
+                        </div>
+                    </div>
+                    <div
+                        class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-100 shadow-sm">
+                        <span class="text-emerald-600 font-bold">خارج الذروة</span>
+                        <span class="text-slate-600">5:00 ص - 2:00 ظ</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="font-bold text-slate-600 mb-2 mt-4 text-sm">المنزلي والخدمات</h3>
+            <div class="border rounded-xl overflow-hidden mb-6">
+                <table class="w-full info-table">
+                    <thead>
+                        <tr>
+                            <th>الشريحة</th>
+                            <th>التكلفة (فلس)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-category="dom_supported" class="transition duration-500">
+                            <td>المنزلي المدعوم (1 إلى 300 / 301 إلى 600 / أكثر من 600)</td>
+                            <td>50 / 100 / 200</td>
+                        </tr>
+                        <tr data-category="dom_unsupported" class="transition duration-500">
+                            <td>المنزلي غير المدعوم (1 إلى 1000 / فوق)</td>
+                            <td>120 / 150</td>
+                        </tr>
+                        <tr data-category="dom_services" class="transition duration-500">
+                            <td>عداد الخدمات المنزلي (نفس المدعوم)</td>
+                            <td>50 / 100 / 200</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="text-xs text-slate-400">المدعوم: حسم 2.5 د.أ لشريحة 51-200 / و 2.0
+                                د.أ لـ 201-600</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="font-bold text-slate-600 mb-2 text-sm">التجاري والقطاعات والمستوية</h3>
+            <div class="border rounded-xl overflow-hidden mb-6">
+                <table class="w-full info-table text-xs md:text-sm">
+                    <thead>
+                        <tr>
+                            <th>القطاع</th>
+                            <th>التكلفة (فلس)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-category="commercial" class="transition duration-500">
+                            <td>التجاري / خدمات تجاري (حتى 2000 / فوق)</td>
+                            <td>120 / 152</td>
+                        </tr>
+                        <tr data-category="banks" class="transition duration-500">
+                            <td>البنوك</td>
+                            <td>285</td>
+                        </tr>
+                        <tr data-category="hospitals" class="transition duration-500">
+                            <td>مستشفيات خاصة</td>
+                            <td>140</td>
+                        </tr>
+                        <tr data-category="armed_forces" class="transition duration-500">
+                            <td>القوات المسلحة الأردنية</td>
+                            <td>146</td>
+                        </tr>
+                        <tr data-category="agriculture" class="transition duration-500">
+                            <td>قطاع الزراعة مستوية</td>
+                            <td>55</td>
+                        </tr>
+                        <tr data-category="hotels" class="transition duration-500">
+                            <td>الفنادق مستوية</td>
+                            <td>82</td>
+                        </tr>
+                        <tr data-category="small_industrial" class="transition duration-500">
+                            <td>الصناعيون الصغار (حتى 10000 / فوق)</td>
+                            <td>60 / 68</td>
+                        </tr>
+                        <tr data-category="tv_radio" class="transition duration-500">
+                            <td>الاذاعة والتلفزيون</td>
+                            <td>152</td>
+                        </tr>
+                        <tr data-category="telecom" class="transition duration-500">
+                            <td>الاتصالات (وقت الذروة)</td>
+                            <td>152</td>
+                        </tr>
+                        <tr data-category="water_pumping" class="transition duration-500">
+                            <td>ضخ المياه (ذروة جزئية)</td>
+                            <td>96</td>
+                        </tr>
+                        <tr data-category="street_lights" class="transition duration-500">
+                            <td>إنارة شوارع</td>
+                            <td>114</td>
+                        </tr>
+                        <tr data-category="ports" class="transition duration-500">
+                            <td>مؤسسة الموانئ</td>
+                            <td>159</td>
+                        </tr>
+                        <tr data-category="mixed_comm_agri" class="transition duration-500">
+                            <td>مختلطة تجاري/زراعي</td>
+                            <td>101</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="font-bold text-slate-600 mb-2 text-sm">التعرفات المرتبطة بالزمن</h3>
+            <div data-category-table="ev_home" class="border rounded-xl overflow-hidden mb-2 transition duration-500">
+                <table class="w-full info-table text-xs md:text-sm">
+                    <thead>
+                        <tr>
+                            <th>القطاع (الذروة / الجزئي / خارج)</th>
+                            <th>التكلفة (فلس)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-category="ev_home">
+                            <td>شحن منزلي زمني</td>
+                            <td>160 / 118 / 108</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div data-category-table="ev_public" class="border rounded-xl overflow-hidden mb-2 transition duration-500">
+                <table class="w-full info-table text-xs md:text-sm">
+                    <tbody>
+                        <tr data-category="ev_public">
+                            <td>شحن محطات عامة</td>
+                            <td>133 / 113 / 103</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div data-category-table="med_industrial" class="border rounded-xl overflow-hidden transition duration-500">
+                <table class="w-full info-table text-xs md:text-sm">
+                    <tbody>
+                        <tr data-category="med_industrial">
+                            <td>الصناعي المتوسط زمني</td>
+                            <td>79 / 69 / 59</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Disclaimer -->
+    <p class="text-center text-slate-400 text-sm mt-8 mb-4 max-w-sm mx-auto xl:hidden">
+        الجداول الاسترشادية للتعرفة تظهر تلقائياً في الشاشات الكبيرة لتجربة Dashboard متكاملة.
+    </p>
+
+    <script>
+        // Setup keyboard support & dynamic scrolling
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('.calc-input');
+            inputs.forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        if (document.getElementById('waterSection').classList.contains('hidden') === false) {
+                            calculateWater();
+                        } else {
+                            calculateElectricity();
+                        }
+                    }
+                });
+            });
+
+            document.getElementById('waterCategory').addEventListener('change', function () {
+                highlightSidebar('waterSidebar', this.value);
+            });
+
+            document.getElementById('elecCategory').addEventListener('change', function () {
+                highlightSidebar('elecSidebar', this.value);
+            });
+        });
+
+        function highlightSidebar(sidebarId, val) {
+            const sidebar = document.getElementById(sidebarId);
+            if (!sidebar) return;
+
+            // Clear previous highlights
+            const allTargets = sidebar.querySelectorAll('[data-category], [data-category-table]');
+            allTargets.forEach(el => {
+                el.classList.remove('bg-blue-100', 'bg-amber-100');
+            });
+
+            // Find new target
+            let target = sidebar.querySelector(`[data-category="${val}"]`);
+            if (!target) target = sidebar.querySelector(`[data-category-table="${val}"]`);
+
+            if (target) {
+                target.classList.add(sidebarId.includes('water') ? 'bg-blue-100' : 'bg-amber-100');
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function switchTab(tab) {
+            const btnWater = document.getElementById('btnWater');
+            const btnElec = document.getElementById('btnElec');
+            const sectionWater = document.getElementById('waterSection');
+            const sectionElec = document.getElementById('electricitySection');
+
+            if (tab === 'water') {
+                btnWater.classList.add('active-water');
+                btnElec.classList.remove('active-electricity');
+                sectionWater.classList.remove('hidden');
+                sectionElec.classList.add('hidden');
+            } else {
+                btnElec.classList.add('active-electricity');
+                btnWater.classList.remove('active-water');
+                sectionElec.classList.remove('hidden');
+                sectionWater.classList.add('hidden');
+            }
+        }
+
+        function toggleEvInputs() {
+            const cat = document.getElementById('elecCategory').value;
+            const standard = document.getElementById('standardElecInput');
+            const ev = document.getElementById('evElecInputs');
+            const touCats = ['ev_home', 'ev_public', 'med_industrial'];
+
+            if (touCats.includes(cat)) {
+                standard.classList.add('hidden');
+                ev.classList.remove('hidden');
+
+                let pCost, parCost, offCost;
+                if (cat === 'ev_home') { pCost = 160; parCost = 118; offCost = 108; }
+                else if (cat === 'ev_public') { pCost = 133; parCost = 113; offCost = 103; }
+                else if (cat === 'med_industrial') { pCost = 79; parCost = 69; offCost = 59; }
+
+                document.getElementById('lblPeak').innerText = `الذروة (${pCost} فلس)`;
+                document.getElementById('lblPartial').innerText = `الجزئي (${parCost} فلس)`;
+                document.getElementById('lblOffPeak').innerText = `خارج الذروة (${offCost} فلس)`;
+            } else {
+                standard.classList.remove('hidden');
+                ev.classList.add('hidden');
+            }
+        }
+
+        function calculateWater() {
+            const m3Str = document.getElementById('waterInput').value;
+            if (!m3Str) return;
+            const m3 = parseFloat(m3Str);
+            if (m3 < 0) return;
+
+            const category = document.getElementById('waterCategory').value;
+            let total = 0;
+            let breakdown = [];
+            let grossTotal = 0;
+            let subs = 0;
+
+            // Smart Alerts Logic
+            const alertBox = document.getElementById('waterAlert');
+            if (category === 'dom' && m3 > 30) {
+                alertBox.classList.remove('hidden');
+            } else {
+                alertBox.classList.add('hidden');
+            }
+
+            if (category === 'dom') {
+                if (m3 <= 6) {
+                    total = 2.730;
+                    breakdown.push({ range: 'أول 6 م³ (مقطوعة)', amount: m3, cost: 2.730 });
+                } else {
+                    let remaining = m3;
+
+                    total += 2.730;
+                    breakdown.push({ range: 'أول 6 م³ (مقطوعة)', amount: 6, cost: 2.730 });
+                    remaining -= 6;
+
+                    if (remaining > 0) {
+                        let amount = Math.min(remaining, 6);
+                        let cost = amount * 0.750;
+                        total += cost;
+                        breakdown.push({ range: '7-12 م³', amount: amount, cost: cost });
+                        remaining -= amount;
+                    }
+                    if (remaining > 0) {
+                        let amount = Math.min(remaining, 6);
+                        let cost = amount * 1.300;
+                        total += cost;
+                        breakdown.push({ range: '13-18 م³', amount: amount, cost: cost });
+                        remaining -= amount;
+                    }
+                    if (remaining > 0) {
+                        let amount = Math.min(remaining, 6);
+                        let cost = amount * 1.800;
+                        total += cost;
+                        breakdown.push({ range: '19-24 م³', amount: amount, cost: cost });
+                        remaining -= amount;
+                    }
+                    if (remaining > 0) {
+                        let amount = Math.min(remaining, 6);
+                        let cost = amount * 2.250;
+                        total += cost;
+                        breakdown.push({ range: '25-30 م³', amount: amount, cost: cost });
+                        remaining -= amount;
+                    }
+                    if (remaining > 0) {
+                        let amount = Math.min(remaining, 12);
+                        let cost = amount * 2.750;
+                        total += cost;
+                        breakdown.push({ range: '31-42 م³', amount: amount, cost: cost });
+                        remaining -= amount;
+                    }
+                    if (remaining > 0) {
+                        let cost = remaining * 3.400;
+                        total += cost;
+                        breakdown.push({ range: 'فوق 42 م³', amount: remaining, cost: cost });
+                    }
+                }
+
+                // Subsidy Calculation strictly for DOMESTIC
+                grossTotal = m3 * 1.91;
+                subs = grossTotal - total;
+                if (subs <= 0) {
+                    subs = 0;
+                    grossTotal = total;
+                }
+
+            } else if (category === 'non_dom') {
+                // Non-Domestic Calculation
+                let remaining = m3;
+                if (m3 > 0) {
+                    // Fixed fee
+                    total += 1.408;
+                    breakdown.push({ range: 'رسوم ثابتة', amount: 0, cost: 1.408 });
+
+                    // Tier 1: 0-2 (2 m3) -> 3.110
+                    let amount = Math.min(remaining, 2);
+                    let cost = amount * 3.110;
+                    total += cost;
+                    breakdown.push({ range: 'أول 2 م³', amount: amount, cost: cost });
+                    remaining -= amount;
+
+                    // Tier 2: >2 -> 2.380
+                    if (remaining > 0) {
+                        let cost2 = remaining * 2.380;
+                        total += cost2;
+                        breakdown.push({ range: 'ما فوق 2 م³', amount: remaining, cost: cost2 });
+                    }
+                }
+                // No subsidy for non-domestic
+                grossTotal = total;
+                subs = 0;
+            }
+
+            let percentage = 0;
+            if (grossTotal > 0 && subs > 0) {
+                percentage = (subs / grossTotal) * 100;
+            }
+
+            document.getElementById('waterGross').innerText = grossTotal.toFixed(3) + ' د.أ';
+            document.getElementById('waterTotal').innerText = total.toFixed(3) + ' د.أ';
+
+            const subCont = document.getElementById('waterSubsidyContainer');
+
+            document.getElementById('waterSubsidy').innerText = subs.toFixed(3) + ' د.أ';
+            document.getElementById('waterPercentage').innerText = percentage.toFixed(1) + '%';
+
+            if (subs <= 0) {
+                document.getElementById('waterSubsidy').innerText = '0.000 د.أ';
+                document.getElementById('waterPercentage').innerText = '0%';
+            }
+
+            let tbody = document.getElementById('waterBreakdownItems');
+            tbody.innerHTML = '';
+            breakdown.forEach(item => {
+                let displayAmount = item.amount === 0 ? '-' : item.amount.toFixed(1);
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="px-4 py-3">${item.range}</td>
+                        <td class="px-4 py-3 text-center">${displayAmount}</td>
+                        <td class="px-4 py-3 text-left font-bold text-blue-800">${item.cost.toFixed(3)}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('waterResult').classList.remove('hidden');
+        }
+
+        function calculateElectricity() {
+            const category = document.getElementById('elecCategory').value;
+            let total = 0;
+            let breakdown = [];
+            let discount = 0;
+            let showMin = false;
+            let kwhForAlert = 0;
+
+            if (['ev_home', 'ev_public', 'med_industrial'].includes(category)) {
+                const peak = parseFloat(document.getElementById('peakInput').value) || 0;
+                const partial = parseFloat(document.getElementById('partialInput').value) || 0;
+                const offpeak = parseFloat(document.getElementById('offpeakInput').value) || 0;
+
+                let p_rate = 0, par_rate = 0, off_rate = 0;
+                if (category === 'ev_home') { p_rate = 160; par_rate = 118; off_rate = 108; }
+                else if (category === 'ev_public') { p_rate = 133; par_rate = 113; off_rate = 103; }
+                else if (category === 'med_industrial') { p_rate = 79; par_rate = 69; off_rate = 59; }
+
+                let p_cost = (peak * p_rate) / 1000;
+                let part_cost = (partial * par_rate) / 1000;
+                let off_cost = (offpeak * off_rate) / 1000;
+
+                total = p_cost + part_cost + off_cost;
+
+                if (peak > 0) breakdown.push({ name: `ذروة (${p_rate} فلس)`, amount: peak, cost: p_cost });
+                if (partial > 0) breakdown.push({ name: `جزئي (${par_rate} فلس)`, amount: partial, cost: part_cost });
+                if (offpeak > 0) breakdown.push({ name: `خارج الذروة (${off_rate} فلس)`, amount: offpeak, cost: off_cost });
+
+            } else {
+                const kwhStr = document.getElementById('elecInput').value;
+                if (!kwhStr) return;
+                const kwh = parseFloat(kwhStr);
+                if (kwh < 0) return;
+                kwhForAlert = kwh;
+
+                if (category === 'dom_supported' || category === 'dom_services') {
+                    let rem = kwh;
+                    if (rem > 0) {
+                        let amt = Math.min(rem, 300);
+                        let cost = (amt * 50) / 1000;
+                        total += cost;
+                        breakdown.push({ name: '1-300 (50 فلس)', amount: amt, cost: cost });
+                        rem -= amt;
+                    }
+                    if (rem > 0) {
+                        let amt = Math.min(rem, 300);
+                        let cost = (amt * 100) / 1000;
+                        total += cost;
+                        breakdown.push({ name: '301-600 (100 فلس)', amount: amt, cost: cost });
+                        rem -= amt;
+                    }
+                    if (rem > 0) {
+                        let cost = (rem * 200) / 1000;
+                        total += cost;
+                        breakdown.push({ name: 'أكثر من 600 (200 فلس)', amount: rem, cost: cost });
+                    }
+
+                    if (category === 'dom_supported') {
+                        if (kwh >= 51 && kwh <= 200) discount = 2.5;
+                        else if (kwh >= 201 && kwh <= 600) discount = 2.0;
+                    }
+
+                } else if (category === 'dom_unsupported') {
+                    let rem = kwh;
+                    if (rem > 0) {
+                        let amt = Math.min(rem, 1000);
+                        let cost = (amt * 120) / 1000;
+                        total += cost;
+                        breakdown.push({ name: '1-1000 (120 فلس)', amount: amt, cost: cost });
+                        rem -= amt;
+                    }
+                    if (rem > 0) {
+                        let cost = (rem * 150) / 1000;
+                        total += cost;
+                        breakdown.push({ name: 'أكثر من 1000 (150 فلس)', amount: rem, cost: cost });
+                    }
+                } else if (category === 'banks') {
+                    total = (kwh * 285) / 1000;
+                    breakdown.push({ name: 'بنوك (285 فلس)', amount: kwh, cost: total });
+                } else if (category === 'hospitals') {
+                    total = (kwh * 140) / 1000;
+                    breakdown.push({ name: 'مستشفيات خاصة (140 فلس)', amount: kwh, cost: total });
+                } else if (category === 'commercial') {
+                    let rem = kwh;
+                    if (rem > 0) {
+                        let amt = Math.min(rem, 2000);
+                        let cost = (amt * 120) / 1000;
+                        total += cost;
+                        breakdown.push({ name: '1-2000 (120 فلس)', amount: amt, cost: cost });
+                        rem -= amt;
+                    }
+                    if (rem > 0) {
+                        let cost = (rem * 152) / 1000;
+                        total += cost;
+                        breakdown.push({ name: 'أكثر من 2000 (152 فلس)', amount: rem, cost: cost });
+                    }
+                } else if (category === 'small_industrial') {
+                    let rem = kwh;
+                    if (rem > 0) {
+                        let amt = Math.min(rem, 10000);
+                        let cost = (amt * 60) / 1000;
+                        total += cost;
+                        breakdown.push({ name: '1-10000 (60 فلس)', amount: amt, cost: cost });
+                        rem -= amt;
+                    }
+                    if (rem > 0) {
+                        let cost = (rem * 68) / 1000;
+                        total += cost;
+                        breakdown.push({ name: 'أكثر من 10000 (68 فلس)', amount: rem, cost: cost });
+                    }
+                } else if (category === 'armed_forces') {
+                    total = (kwh * 146) / 1000;
+                    breakdown.push({ name: 'القوات المسلحة الأردنية (146 فلس)', amount: kwh, cost: total });
+                } else if (category === 'agriculture') {
+                    total = (kwh * 55) / 1000;
+                    breakdown.push({ name: 'قطاع الزراعة مستوية (55 فلس)', amount: kwh, cost: total });
+                } else if (category === 'hotels') {
+                    total = (kwh * 82) / 1000;
+                    breakdown.push({ name: 'الفنادق مستوية (82 فلس)', amount: kwh, cost: total });
+                } else if (category === 'tv_radio') {
+                    total = (kwh * 152) / 1000;
+                    breakdown.push({ name: 'الاذاعة والتلفزيون (152 فلس)', amount: kwh, cost: total });
+                } else if (category === 'telecom') {
+                    total = (kwh * 152) / 1000;
+                    breakdown.push({ name: 'الاتصالات وقت الذروة (152 فلس)', amount: kwh, cost: total });
+                } else if (category === 'water_pumping') {
+                    total = (kwh * 96) / 1000;
+                    breakdown.push({ name: 'ضخ المياه (96 فلس)', amount: kwh, cost: total });
+                } else if (category === 'street_lights') {
+                    total = (kwh * 114) / 1000;
+                    breakdown.push({ name: 'إنارة شوارع (114 فلس)', amount: kwh, cost: total });
+                } else if (category === 'ports') {
+                    total = (kwh * 159) / 1000;
+                    breakdown.push({ name: 'مؤسسة الموانئ (159 فلس)', amount: kwh, cost: total });
+                } else if (category === 'mixed_comm_agri') {
+                    total = (kwh * 101) / 1000;
+                    breakdown.push({ name: 'مختلطة تجاري/زراعي (101 فلس)', amount: kwh, cost: total });
+                }
+            }
+
+            // Smart Alert Check
+            const alertBox = document.getElementById('elecAlert');
+            if (category === 'dom_supported' && kwhForAlert > 600) {
+                alertBox.classList.remove('hidden');
+            } else {
+                alertBox.classList.add('hidden');
+            }
+
+            let grossTotal = total;
+            let final_total = total - discount;
+            let actualDiscount = discount;
+
+            if (final_total < 1.75 && (category.includes('dom_') && total > 0)) {
+                if (grossTotal > 1.75) {
+                    actualDiscount = grossTotal - 1.75;
+                } else {
+                    actualDiscount = 0;
+                }
+                final_total = 1.75;
+                showMin = true;
+            } else if (total === 0) {
+                final_total = 0;
+                actualDiscount = 0;
+                showMin = false;
+            }
+
+            let percentage = 0;
+            if (grossTotal > 0 && actualDiscount > 0) {
+                percentage = (actualDiscount / grossTotal) * 100;
+            }
+
+            document.getElementById('elecGross').innerText = grossTotal.toFixed(3) + ' د.أ';
+            document.getElementById('elecTotal').innerText = final_total.toFixed(3) + ' د.أ';
+
+            const discCont = document.getElementById('elecDiscountContainer');
+
+            document.getElementById('elecDiscount').innerText = actualDiscount.toFixed(3) + ' د.أ';
+            document.getElementById('elecPercentage').innerText = percentage.toFixed(1) + '%';
+
+            if (actualDiscount <= 0) {
+                document.getElementById('elecDiscount').innerText = '0.000 د.أ';
+                document.getElementById('elecPercentage').innerText = '0%';
+            }
+
+            const minCont = document.getElementById('elecMinContainer');
+            if (showMin) {
+                minCont.classList.remove('hidden');
+            } else {
+                minCont.classList.add('hidden');
+            }
+
+            let tbody = document.getElementById('elecBreakdownItems');
+            tbody.innerHTML = '';
+            breakdown.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="px-4 py-3">${item.name}</td>
+                        <td class="px-4 py-3 text-center">${item.amount.toFixed(1)}</td>
+                        <td class="px-4 py-3 text-left font-bold text-amber-800">${item.cost.toFixed(3)}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('elecResult').classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>
